@@ -2,7 +2,11 @@
 const path = require("path");
 const utils = require("./utils");
 const config = require("../config");
+const os = require("os");
 const vueLoaderConfig = require("./vue-loader.conf");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const HappyPack = require("happypack");
+var happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 
 function resolve(dir) {
   return path.join(__dirname, "..", dir);
@@ -44,8 +48,18 @@ module.exports = {
       ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
         test: /\.vue$/,
-        loader: "vue-loader",
-        options: vueLoaderConfig
+        use: [
+          {
+            loader: "vue-loader",
+            options: vueLoaderConfig
+          },
+          {
+            loader: "iview-loader",
+            options: {
+              prefix: false
+            }
+          }
+        ]
       },
       {
         test: /\.js$/,
@@ -57,11 +71,17 @@ module.exports = {
         ]
       },
       {
+        test: /iview\/.*?js$/,
+        loader: "happypack/loader?id=happybabel",
+        exclude: /node_modules/
+      },
+      {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
           use: ["css-loader?minimize", "autoprefixer-loader"],
           fallback: "style-loader"
-        })
+        }),
+        exclude: /node_modules/
       },
       {
         test: /\.less$/,
@@ -100,6 +120,15 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new HappyPack({
+      id: "happybabel",
+      loaders: ["babel-loader"],
+      threadPool: happyThreadPool,
+      cache: true,
+      verbose: true
+    })
+  ],
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
     // source contains it (although only uses it if it's native).

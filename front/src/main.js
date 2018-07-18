@@ -2,12 +2,12 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import iView from "iview";
-import Vuex from "vuex";
 import store from "./store/index";
+import FontIcon from "./components/FontIcon";
 import "iview/dist/styles/iview.css";
 
 Vue.use(iView);
-Vue.use(Vuex);
+Vue.component("FontIcon", FontIcon);
 
 Vue.config.productionTip = false;
 

@@ -27,18 +27,16 @@ public class TokenService {
 
     private static final long EXPIRATIONTIME = 7 * 24 * 60 * 60000;     // 7天
     private static final String SECRET = "lanzhu@sspserver";            // JWT密码
-    private static final String TOKEN_PREFIX = "SSP";        // Token前缀
+    private static final String TOKEN_PREFIX = "YBS";        // Token前缀
     private static final String HEADER_STRING = "Authorization";// 存放Token的Header Key
 
     static void addAuthentication(HttpServletResponse response, Authentication authentication) {
 
         List<GrantedAuthority> auths = (List<GrantedAuthority>) authentication.getAuthorities();
         StringBuilder sb = new StringBuilder();
-        List<String> authPageList = new ArrayList<>();
         JSONObject result = new JSONObject();
         for (GrantedAuthority auth : auths) {
             sb.append(auth.getAuthority());
-            authPageList.add(auth.getAuthority()); //定义为用户可以看见的路由名称
         }
         User user = (User) authentication.getPrincipal();
 
@@ -62,7 +60,6 @@ public class TokenService {
         // 将 结果 写入 body
         try {
             result.put("jwt", JWT);
-            result.put("authPages", authPageList);
             result.put("userDetail", user);
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             response.setStatus(HttpServletResponse.SC_OK);

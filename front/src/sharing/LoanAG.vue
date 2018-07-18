@@ -1,6 +1,3 @@
-<style lang="less">
-@import "@/libs/common.less";
-</style>
 
 <template>
     <div>

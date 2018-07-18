@@ -5,21 +5,28 @@ import store from "../store";
 
 Vue.use(Router);
 
+// 页面刷新时，重新赋值token
+if (window.localStorage.getItem("token")) {
+  store.commit("setToken", window.localStorage.getItem("token"));
+}
+if (window.localStorage.getItem("userDetail")) {
+  store.commit("setUserDetail", window.localStorage.getItem("userDetail"));
+}
+
 export const loginRoute = {
   path: "/login",
   name: "login",
   meta: {
-    title: "登录"
+    title: "登录",
+    noAuth: true
   },
-  component: () => import("@/admin/Loin.vue")
+  component: () => import("@/admin/Login.vue")
 };
 
 export const registerRoute = {
   path: "/register",
   name: "register",
-  meta: {
-    title: "注册"
-  },
+  meta: { title: "注册", noAuth: true },
   component: () => import("@/admin/Register.vue")
 };
 
@@ -27,7 +34,8 @@ export const page404 = {
   path: "/*",
   name: "error-404",
   meta: {
-    title: "找不到业务"
+    title: "找不到业务",
+    noAuth: true
   },
   component: () => import("@/error-page/404.vue")
 };
@@ -57,7 +65,8 @@ export const sharingRoute = {
       path: "/loan-bill",
       name: "LoginBill",
       meta: {
-        title: "发票贷信息登记"
+        title: "发票贷信息登记",
+        noAuth: true
       },
       component: () => import("@/sharing/LoanBill.vue")
     },
@@ -65,7 +74,8 @@ export const sharingRoute = {
       path: "/loan-ag",
       name: "LoanAG",
       meta: {
-        title: "爱柜贷信息登记"
+        title: "爱柜贷信息登记",
+        noAuth: true
       },
       component: () => import("@/sharing/LoanAG.vue")
     }
@@ -78,8 +88,8 @@ export const router = new Router({
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start();
-  Util.title(to.meta.title);
-
+  let title = to.meta.title ? "医伴金服" : to.meta.title;
+  window.document.title = title;
   if (!to.meta.noAuth) {
     // 判断该路由是否需要登录权限
     if (store.state.user && store.state.user.token) {
@@ -96,7 +106,6 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach(to => {
-  Util.openNewPage(router.app, to.name, to.params, to.query);
   iView.LoadingBar.finish();
   window.scrollTo(0, 0);
 });
