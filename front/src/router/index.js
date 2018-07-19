@@ -41,18 +41,26 @@ export const page404 = {
 };
 
 export const adminRoute = {
-  path: "/manager",
+  path: "/",
   name: "manager",
   redirect: "/home",
   component: () => import("@/admin/Main.vue"),
   children: [
     {
-      path: "/home",
+      path: "home",
       name: "home",
       meta: {
         title: "分享管理-主页"
       },
       component: () => import("@/admin/Home.vue")
+    },
+    {
+      path: "ownspace",
+      name: "ownspace",
+      meta: {
+        title: "账号信息"
+      },
+      component: () => import("@/admin/MyOwnSpace.vue")
     }
   ]
 };

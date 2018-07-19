@@ -1,16 +1,18 @@
 <template>
   <div id="app">
-    <router-view/>
-    <footer></footer>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
+    <my-footer class="page-footer"></my-footer>
   </div>
 </template>
 
 <script>
-import Footer from "@/components/Footer.vue";
+import MyFooter from "./components/MyFooter.vue";
 
 export default {
   name: "App",
-  components: { Footer }
+  components: { MyFooter }
 };
 </script>
 
@@ -27,5 +29,10 @@ body {
 #app {
   width: 100%;
   height: 100%;
+}
+.page-footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0em;
 }
 </style>

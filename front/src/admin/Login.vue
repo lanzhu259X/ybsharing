@@ -6,7 +6,9 @@
     <div class="login" :style="{ backgroundImage: 'url(' + bgImage + ')' }">
         <Row type="flex" justify="center" class="login-con">
             <Card style="width: 300px;">
-                <p slot="title">Welcome to YIBAN-Sharing</p>
+                <p slot="title">
+                  Welcome to YIBAN-Sharing
+                </p>
                 <div class="form-con">
                     <i-form ref="loginForm" :model="form" :rules="rules">
                         <FormItem prop="username">
@@ -28,14 +30,14 @@
                             <Button @click="handleSubmit" type="primary" long :loading="loading">登录</Button>
                         </FormItem>
                         <Alert type="error" v-show="loginResponse" show-icon>{{ loginResponse }}</Alert>
-                        <Row>
+                        <!-- <Row>
                             <i-col span="12">
                                 <Checkbox v-model="form.remember">记住我</Checkbox>
                             </i-col>
                             <i-col span="12">
                                 <a style="float:right" @click="toRegister">新用户注册</a>
                             </i-col>
-                        </Row>
+                        </Row> -->
                     </i-form>
                 </div>
             </Card>

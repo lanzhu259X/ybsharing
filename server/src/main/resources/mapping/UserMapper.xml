@@ -11,11 +11,11 @@
     <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
     <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
     <result column="updated_by" property="updatedBy" jdbcType="VARCHAR" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, phone, user_name, status, avatar_url, comment, created_by, created_time, updated_by, 
-    update_time
+    updated_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -28,11 +28,11 @@
     insert into t_user (id, phone, user_name, 
       status, avatar_url, comment, 
       created_by, created_time, updated_by, 
-      update_time)
+      updated_time)
     values (#{id,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
       #{status,jdbcType=VARCHAR}, #{avatarUrl,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
       #{createdBy,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{updatedTime,jdbcType=TIMESTAMP})
   </insert>
 
   <update id="updateByPrimaryKey" parameterType="com.yiban.sharing.entities.User" >
@@ -45,7 +45,7 @@
       created_by = #{createdBy,jdbcType=VARCHAR},
       created_time = #{createdTime,jdbcType=TIMESTAMP},
       updated_by = #{updatedBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
