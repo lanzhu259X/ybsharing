@@ -27,11 +27,13 @@ export default {
   width: 100%;
   height: 100%;
   .head {
-    position: absolute;
-    top: 0em;
+    width: 100%;
+    height: 90px;
   }
   .content {
     margin-top: 1em;
+    margin-left: 5px;
+    margin-right: 5px;
   }
 }
 </style>

@@ -9,5 +9,6 @@
     <mappers>
         <mapper resource="mapping/UserAuthMapper.xml"/>
         <mapper resource="mapping/UserMapper.xml"/>
+        <mapper resource="mapping/SharingModalMapper.xml"/>
     </mappers>
 </configuration>

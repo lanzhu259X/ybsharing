@@ -1,9 +1,5 @@
-<style lang="less">
-@import "../libs/common.less";
-</style>
-
 <template>
-    <div class="login" :style="{ backgroundImage: 'url(' + bgImage + ')' }">
+    <div class="login" @keydown.enter="handleSubmit" :style="{ backgroundImage: 'url(' + bgImage + ')' }">
         <Row type="flex" justify="center" class="login-con">
             <Card style="width: 300px;">
                 <p slot="title">
@@ -30,14 +26,6 @@
                             <Button @click="handleSubmit" type="primary" long :loading="loading">登录</Button>
                         </FormItem>
                         <Alert type="error" v-show="loginResponse" show-icon>{{ loginResponse }}</Alert>
-                        <!-- <Row>
-                            <i-col span="12">
-                                <Checkbox v-model="form.remember">记住我</Checkbox>
-                            </i-col>
-                            <i-col span="12">
-                                <a style="float:right" @click="toRegister">新用户注册</a>
-                            </i-col>
-                        </Row> -->
                     </i-form>
                 </div>
             </Card>
@@ -101,7 +89,7 @@ export default {
                   //default avator
                   self.$store.commit(
                     "setAvator",
-                    "https://yibanerp.oss-cn-shanghai.aliyuncs.com/6/21/20180619_9V5ffK3uK1o7gZcSV42A.jpg?x-oss-process=style/resize200"
+                    "https://i.loli.net/2017/08/21/599a521472424.jpg"
                   );
                 }
                 self.$router.push({
@@ -112,11 +100,9 @@ export default {
               }
             })
             .catch(function(error) {
-              console.log(error);
               self.loading = false;
               let result = error.response ? error.response.data : "";
               if (result && result.message) {
-                console.log(result);
                 self.loginResponse = result.message;
               } else {
                 self.loginResponse = "登录异常";

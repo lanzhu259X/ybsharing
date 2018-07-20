@@ -13,6 +13,11 @@ public enum ErrorCode {
     COMPANY_NAME_EXIST(1006, "公司名称已经存在"),
 
 
+    SHARING_ADD_TITLE_EMPTY(2001, "分享标题不能为空"),
+    SHARING_ADD_SUBTITLE_EMPTY(2002, "分享副标题不能为空"),
+    SHARING_ADD_MODEL_NAME_EMPTY(2003, "分享信息中的描述名称不能为空"),
+
+
     PARAM_ERROR(9990, "参数错误"),
     DB_INSER_FAIL(9995, "数据保存失败"),
     DB_UPDATE_FAIL(9996, "数据修改失败"),

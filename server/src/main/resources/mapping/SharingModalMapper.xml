@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yiban.sharing.dao.SharingModalMapper" >
+  <resultMap id="BaseResultMap" type="com.yiban.sharing.entities.SharingModal" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sharing_no" property="sharingNo" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="sharing_title" property="sharingTitle" jdbcType="VARCHAR" />
+    <result column="sharing_sub_title" property="sharingSubTitle" jdbcType="VARCHAR" />
+    <result column="sharing_content" property="sharingContent" jdbcType="LONGVARCHAR" />
+    <result column="record_modal" property="recordModal" jdbcType="LONGVARCHAR" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+    <result column="updated_by" property="updatedBy" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, sharing_no, status, sharing_title, sharing_sub_title, created_by, updated_by, 
+    created_time, updated_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    sharing_content, record_modal
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_sharing_modal
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="findBySharingNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_sharing_modal
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_sharing_modal
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yiban.sharing.entities.SharingModal" keyProperty="id" useGeneratedKeys="true" >
+    insert into t_sharing_modal (sharing_no, status,
+      sharing_title, sharing_sub_title, created_by, 
+      updated_by, created_time, updated_time, 
+      sharing_content, record_modal)
+    values (#{sharingNo,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+      #{sharingTitle,jdbcType=VARCHAR}, #{sharingSubTitle,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, 
+      #{updatedBy,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{sharingContent,jdbcType=LONGVARCHAR}, #{recordModal,jdbcType=LONGVARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.yiban.sharing.entities.SharingModal" >
+    update t_sharing_modal
+    set sharing_no = #{sharingNo,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      sharing_title = #{sharingTitle,jdbcType=VARCHAR},
+      sharing_sub_title = #{sharingSubTitle,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      updated_by = #{updatedBy,jdbcType=VARCHAR},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      sharing_content = #{sharingContent,jdbcType=LONGVARCHAR},
+      record_modal = #{recordModal,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="sharingListCount" parameterType="com.yiban.sharing.dto.SharingQuery" resultType="java.lang.Integer">
+    select count(1) from t_sharing_modal 
+    where 1=1 
+    <if test="search != null">
+      <bind name="patten" value="'%' + search + '%'" />
+      and (sharing_no like #{patten} or sharing_title like #{patten})
+    </if>
+  </select>
+
+  <select id="sharingList" parameterType="com.yiban.sharing.dto.SharingQuery" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from t_sharing_modal
+    where 1=1
+    <if test="search != null">
+      <bind name="patten" value="'%' + search + '%'" />
+      and (sharing_no like #{patten} or sharing_title like #{patten})
+    </if>
+    order by id desc
+    <if test="limit != null and offset != null">
+       limit #{offset}, #{limit}
+    </if>
+  </select>
+
+
+</mapper>

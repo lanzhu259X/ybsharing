@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import iView from "iview";
 import store from "../store";
+import { routes } from "./router";
 
 Vue.use(Router);
 
@@ -13,86 +14,11 @@ if (window.localStorage.getItem("userDetail")) {
   store.commit("setUserDetail", window.localStorage.getItem("userDetail"));
 }
 
-export const loginRoute = {
-  path: "/login",
-  name: "login",
-  meta: {
-    title: "登录",
-    noAuth: true
-  },
-  component: () => import("@/admin/Login.vue")
+// 路由配置
+const RouterConfig = {
+  routes: routes
 };
-
-export const registerRoute = {
-  path: "/register",
-  name: "register",
-  meta: { title: "注册", noAuth: true },
-  component: () => import("@/admin/Register.vue")
-};
-
-export const page404 = {
-  path: "/*",
-  name: "error-404",
-  meta: {
-    title: "找不到业务",
-    noAuth: true
-  },
-  component: () => import("@/error-page/404.vue")
-};
-
-export const adminRoute = {
-  path: "/",
-  name: "manager",
-  redirect: "/home",
-  component: () => import("@/admin/Main.vue"),
-  children: [
-    {
-      path: "home",
-      name: "home",
-      meta: {
-        title: "分享管理-主页"
-      },
-      component: () => import("@/admin/Home.vue")
-    },
-    {
-      path: "ownspace",
-      name: "ownspace",
-      meta: {
-        title: "账号信息"
-      },
-      component: () => import("@/admin/MyOwnSpace.vue")
-    }
-  ]
-};
-
-export const sharingRoute = {
-  path: "/sharing",
-  name: "sharing",
-  children: [
-    {
-      path: "/loan-bill",
-      name: "LoginBill",
-      meta: {
-        title: "发票贷信息登记",
-        noAuth: true
-      },
-      component: () => import("@/sharing/LoanBill.vue")
-    },
-    {
-      path: "/loan-ag",
-      name: "LoanAG",
-      meta: {
-        title: "爱柜贷信息登记",
-        noAuth: true
-      },
-      component: () => import("@/sharing/LoanAG.vue")
-    }
-  ]
-};
-
-export const router = new Router({
-  routes: [loginRoute, registerRoute, page404, adminRoute, sharingRoute]
-});
+export const router = new Router(RouterConfig);
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start();
