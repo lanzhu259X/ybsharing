@@ -62,6 +62,14 @@ export const adminRoute = {
         title: "分享信息列表"
       },
       component: () => import("@/admin/sharing/SharingList.vue")
+    },
+    {
+      path: "/sharing-detail/:sharingNo",
+      name: "sharingdetail",
+      meta: {
+        title: "分享详情"
+      },
+      component: () => import("@/admin/sharing/SharingDetail.vue")
     }
   ]
 };

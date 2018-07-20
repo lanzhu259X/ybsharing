@@ -1,11 +1,19 @@
 <template>
     <div>
         <my-title title="分享页列表"></my-title>
-        <Row type="flex" justify="start" :gutter="20" class="margin-left-10" >
-            <i-input v-model="searchValue" placeholder="分享标题/分享编号" style="width: 200px;"/>
-            <Button type="primary" icon="search" @click="reloadListData" :loading="dataLoading">查询</Button>
+        <Row style="margin-bottom: 10px;">
+          <i-col span="16">
+            <Row type="flex" justify="start" style="padding-left: 7px;">
+              <i-input v-model="searchValue" placeholder="分享标题/分享编号" style="width: 200px;"/>
+            </Row>
+          </i-col>
+          <i-col span="8">
+            <Row type="flex" justify="end">
+              <Button type="primary" icon="search" @click="reloadListData" :loading="dataLoading">查询</Button>
+            </Row>
+          </i-col>
         </Row>
-        <Table border highlight-row :columns="tabColumns" :data="tabData"
+        <Table highlight-row :columns="tabColumns" :data="tabData"
                 :loading="dataLoading"
                 ref="table" size="small">
         </Table>
@@ -32,7 +40,89 @@ export default {
       currentPage: 1,
       pageSize: 20,
       tabData: [],
-      tabColumns: []
+      tabColumns: [
+        {
+          title: "分享编号",
+          width: 145,
+          key: "sharingNo"
+        },
+        {
+          title: "标题",
+          minWidth: 150,
+          key: "sharingTitle"
+        },
+        {
+          title: "状态",
+          width: 130,
+          key: "status",
+          render: (h, params) => {
+            let status = params.row.status;
+            let label = "";
+            let color = "";
+            if (status === "NORMAL") {
+              label = "分享中";
+              color = "#19be6b";
+            } else if (status === "DOWN") {
+              label = "下架";
+              color = "#ed3f14";
+            }
+            return h(
+              "Tag",
+              {
+                props: {
+                  type: "dot",
+                  color: color
+                }
+              },
+              label
+            );
+          }
+        },
+        {
+          title: "操作",
+          key: "action",
+          width: 160,
+          render: (h, params) => {
+            let self = this;
+            return h("ButtonGroup", { props: { size: "small" } }, [
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "success",
+                    icon: "eye"
+                  },
+                  on: {
+                    click: () => {
+                      self.$router.push({
+                        name: "sharingdetail",
+                        params: { sharingNo: params.row.sharingNo }
+                      });
+                    }
+                  }
+                },
+                "详情"
+              ),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "error",
+                    icon: "arrow-down-a",
+                    disabled: params.row.status === "DOWN"
+                  },
+                  on: {
+                    click: () => {
+                      self.setToDown(params.row.id);
+                    }
+                  }
+                },
+                "下架"
+              )
+            ]);
+          }
+        }
+      ]
     };
   },
   mounted() {
@@ -61,6 +151,29 @@ export default {
           self.dataLoading = false;
           util.errorProcessor(self, error);
         });
+    },
+    setToDown(id) {
+      console.log(id);
+      if (!id || id <= 0) {
+        return;
+      }
+      let self = this;
+      this.$Modal.confirm({
+        title: "下架确认",
+        content: "是否确认下架，下架后不可再上架！",
+        width: 280,
+        onOk: () => {
+          util.ajax
+            .delete("/sharing/admin/down/" + id)
+            .then(repsonse => {
+              self.$Message.success("下架成功");
+              self.reloadListData();
+            })
+            .catch(error => {
+              util.errorProcessor(self, error);
+            });
+        }
+      });
     }
   }
 };

@@ -98,4 +98,22 @@ public class SharingEditService {
     public List<SharingModal> sharingList(SharingQuery query) {
         return sharingModalMapper.sharingList(query);
     }
+
+    public void sharingDown(Integer id, User user) throws BizException {
+        if (id == null || id <= 0) {
+            throw new BizException(ErrorCode.PARAM_ERROR);
+        }
+        SharingModal modal = sharingModalMapper.selectByPrimaryKey(id);
+        if (modal == null) {
+            log.warn("get sharing modal fail by id:{}", id);
+            throw new BizException(ErrorCode.SHARING_MODAL_GET_FAIL);
+        }
+        log.info("update sharing modal {} status to DOWN by user:{}", id, user.getId());
+        modal.setStatus(SharingModalStatus.DOWN.name());
+        modal.setUpdatedBy(String.valueOf(user.getId()));
+        modal.setUpdatedTime(new Date());
+        sharingModalMapper.updateByPrimaryKey(modal);
+        //delete redis cache;
+        redisTemplate.delete(modal.getSharingNo());
+    }
 }

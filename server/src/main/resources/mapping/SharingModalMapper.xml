@@ -16,27 +16,20 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, sharing_no, status, sharing_title, sharing_sub_title, created_by, updated_by, 
+    id, sharing_no, status, sharing_title, sharing_sub_title, sharing_content, record_modal, created_by, updated_by,
     created_time, updated_time
-  </sql>
-  <sql id="Blob_Column_List" >
-    sharing_content, record_modal
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from t_sharing_modal
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="findBySharingNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from t_sharing_modal
-    where id = #{id,jdbcType=INTEGER}
+    where sharing_no = #{sharingNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_sharing_modal

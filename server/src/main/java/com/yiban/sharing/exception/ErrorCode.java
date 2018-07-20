@@ -16,6 +16,7 @@ public enum ErrorCode {
     SHARING_ADD_TITLE_EMPTY(2001, "分享标题不能为空"),
     SHARING_ADD_SUBTITLE_EMPTY(2002, "分享副标题不能为空"),
     SHARING_ADD_MODEL_NAME_EMPTY(2003, "分享信息中的描述名称不能为空"),
+    SHARING_MODAL_GET_FAIL(2004, "获取分享模板失败"),
 
 
     PARAM_ERROR(9990, "参数错误"),
