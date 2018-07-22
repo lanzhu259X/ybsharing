@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
-        webSecurity.ignoring().antMatchers("/register");
+        webSecurity.ignoring().antMatchers("/register", "/sharing/out/*");
     }
 
     @Override

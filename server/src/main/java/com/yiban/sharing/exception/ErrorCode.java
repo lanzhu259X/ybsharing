@@ -17,9 +17,13 @@ public enum ErrorCode {
     SHARING_ADD_SUBTITLE_EMPTY(2002, "分享副标题不能为空"),
     SHARING_ADD_MODEL_NAME_EMPTY(2003, "分享信息中的描述名称不能为空"),
     SHARING_MODAL_GET_FAIL(2004, "获取分享模板失败"),
+    SHARING_MODAL_ERROR(2005, "分享信息获取失败，请刷新页面后重试"),
+    SHARING_RECORD_TICKET_EXIST(2006, "登记信息已提交，不能重复提交"),
+
 
 
     PARAM_ERROR(9990, "参数错误"),
+    UPLOAD_FILE_TYPE_ERROR(9991, "上传文件类型错误"),
     DB_INSER_FAIL(9995, "数据保存失败"),
     DB_UPDATE_FAIL(9996, "数据修改失败"),
     LOGIN_PASSWORD_INVALID(9997, "登录密码验证失败"),

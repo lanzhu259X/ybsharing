@@ -64,7 +64,7 @@ export const adminRoute = {
       component: () => import("@/admin/sharing/SharingList.vue")
     },
     {
-      path: "/sharing-detail/:sharingNo",
+      path: "sharing-detail/:sharingNo",
       name: "sharingdetail",
       meta: {
         title: "分享详情"
@@ -74,35 +74,19 @@ export const adminRoute = {
   ]
 };
 
-export const sharingRoute = {
-  path: "/sharing",
-  name: "sharing",
-  children: [
-    {
-      path: "/loan-bill",
-      name: "LoginBill",
-      meta: {
-        title: "发票贷信息登记",
-        noAuth: true
-      },
-      component: () => import("@/sharing/LoanBill.vue")
-    },
-    {
-      path: "/loan-ag",
-      name: "LoanAG",
-      meta: {
-        title: "爱柜贷信息登记",
-        noAuth: true
-      },
-      component: () => import("@/sharing/LoanAG.vue")
-    }
-  ]
+export const defaultSharing = {
+  path: "/sharing/default/:sharingNo",
+  name: "defaultsharing",
+  meta: {
+    noAuth: true
+  },
+  component: () => import("@/sharing/DefaultSharing.vue")
 };
 
 export const routes = [
   loginRoute,
   registerRoute,
+  defaultSharing,
   adminRoute,
-  sharingRoute,
   page404
 ];

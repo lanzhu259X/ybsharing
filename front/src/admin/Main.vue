@@ -25,7 +25,7 @@ export default {
 <style lang="less">
 .admin-main {
   width: 100%;
-  height: 100%;
+  height: auto;
   .head {
     width: 100%;
     height: 90px;

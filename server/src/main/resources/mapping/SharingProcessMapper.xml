@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yiban.sharing.dao.SharingProcessMapper" >
+  <resultMap id="BaseResultMap" type="com.yiban.sharing.entities.SharingProcess" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="record_id" property="recordId" jdbcType="INTEGER" />
+    <result column="process_time" property="processTime" jdbcType="TIMESTAMP" />
+    <result column="process_user" property="processUser" jdbcType="INTEGER" />
+    <result column="process_user_name" property="processUserName" jdbcType="VARCHAR" />
+    <result column="process_result" property="processResult" jdbcType="VARCHAR" />
+    <result column="handle_status" property="handleStatus" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, record_id, process_time, process_user, process_user_name, process_result, handle_status, created_time,
+    created_by
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sharing_process
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getByRecordId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_sharing_process
+    where record_id = #{recordId}
+    order by id desc;
+  </select>
+
+  <insert id="insert" parameterType="com.yiban.sharing.entities.SharingProcess" keyProperty="id" useGeneratedKeys="true" >
+    insert into t_sharing_process (record_id, process_time,
+      process_user, process_user_name, process_result, handle_status,
+      created_time, created_by)
+    values (#{recordId,jdbcType=INTEGER}, #{processTime,jdbcType=TIMESTAMP},
+      #{processUser,jdbcType=INTEGER}, #{processUserName,jdbcType=VARCHAR}, #{processResult,jdbcType=VARCHAR}, 
+      #{handleStatus, jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.yiban.sharing.entities.SharingProcess" >
+    update t_sharing_process
+    set record_id = #{recordId,jdbcType=INTEGER},
+      process_time = #{processTime,jdbcType=TIMESTAMP},
+      process_user = #{processUser,jdbcType=INTEGER},
+      process_user_name = #{processUserName,jdbcType=VARCHAR},
+      process_result = #{processResult,jdbcType=VARCHAR},
+      handle_status = #{handleStatus, jdbcType=VARCHAR},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

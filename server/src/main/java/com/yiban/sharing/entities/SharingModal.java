@@ -20,6 +20,10 @@ public class SharingModal {
 
     private String sharingContent;
 
+    private String headImage;
+
+    private String headFileKey;
+
     private String recordModal;
 
     private List<ModalBody> modalBodyList;
@@ -31,6 +35,8 @@ public class SharingModal {
     private Date createdTime;
 
     private Date updatedTime;
+
+    private String recordTicket; //用于分享时每次获取页面的信息的时候控制职能提交一次.
 
     public Integer getId() {
         return id;
@@ -133,5 +139,29 @@ public class SharingModal {
         if (modalBodyList != null && !modalBodyList.isEmpty()) {
             this.setRecordModal(JSON.toJSONString(modalBodyList));
         }
+    }
+
+    public String getHeadImage() {
+        return headImage;
+    }
+
+    public void setHeadImage(String headImage) {
+        this.headImage = headImage;
+    }
+
+    public String getRecordTicket() {
+        return recordTicket;
+    }
+
+    public void setRecordTicket(String recordTicket) {
+        this.recordTicket = recordTicket;
+    }
+
+    public String getHeadFileKey() {
+        return headFileKey;
+    }
+
+    public void setHeadFileKey(String headFileKey) {
+        this.headFileKey = headFileKey;
     }
 }

@@ -10,5 +10,8 @@
         <mapper resource="mapping/UserAuthMapper.xml"/>
         <mapper resource="mapping/UserMapper.xml"/>
         <mapper resource="mapping/SharingModalMapper.xml"/>
+        <mapper resource="mapping/SharingRecordMapper.xml"/>
+        <mapper resource="mapping/SharingProcessMapper.xml"/>
+        <mapper resource="mapping/SharingCountMapper.xml"/>
     </mappers>
 </configuration>

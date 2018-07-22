@@ -9,6 +9,8 @@
     <result column="sharing_sub_title" property="sharingSubTitle" jdbcType="VARCHAR" />
     <result column="sharing_content" property="sharingContent" jdbcType="LONGVARCHAR" />
     <result column="record_modal" property="recordModal" jdbcType="LONGVARCHAR" />
+    <result column="head_image" property="headImage" jdbcType="VARCHAR" />
+    <result column="head_file_key" property="headFileKey" jdbcType="VARCHAR" />
     <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
     <result column="updated_by" property="updatedBy" jdbcType="VARCHAR" />
     <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
@@ -16,7 +18,8 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, sharing_no, status, sharing_title, sharing_sub_title, sharing_content, record_modal, created_by, updated_by,
+    id, sharing_no, status, sharing_title, sharing_sub_title, sharing_content, record_modal,
+    head_image, head_file_key, created_by, updated_by,
     created_time, updated_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -37,11 +40,12 @@
   </delete>
   <insert id="insert" parameterType="com.yiban.sharing.entities.SharingModal" keyProperty="id" useGeneratedKeys="true" >
     insert into t_sharing_modal (sharing_no, status,
-      sharing_title, sharing_sub_title, created_by, 
+      sharing_title, sharing_sub_title, head_image, head_file_key, created_by,
       updated_by, created_time, updated_time, 
       sharing_content, record_modal)
     values (#{sharingNo,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
-      #{sharingTitle,jdbcType=VARCHAR}, #{sharingSubTitle,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, 
+      #{sharingTitle,jdbcType=VARCHAR}, #{sharingSubTitle,jdbcType=VARCHAR},
+      #{headImage,jdbcType=VARCHAR}, #{headFileKey,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR},
       #{updatedBy,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, 
       #{sharingContent,jdbcType=LONGVARCHAR}, #{recordModal,jdbcType=LONGVARCHAR})
   </insert>
@@ -52,6 +56,8 @@
       status = #{status,jdbcType=VARCHAR},
       sharing_title = #{sharingTitle,jdbcType=VARCHAR},
       sharing_sub_title = #{sharingSubTitle,jdbcType=VARCHAR},
+      head_image = #{headImage,jdbcType=VARCHAR},
+      head_file_key = #{headFileKey,jdbcType=VARCHAR},
       created_by = #{createdBy,jdbcType=VARCHAR},
       updated_by = #{updatedBy,jdbcType=VARCHAR},
       created_time = #{createdTime,jdbcType=TIMESTAMP},

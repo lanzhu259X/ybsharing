@@ -35,6 +35,7 @@ module.exports = {
     "spaced-comment": 0,
     "no-multiple-empty-lines": 0,
     "eol-last": 0,
-    "no-unused-vars": 1
+    "no-unused-vars": 1,
+    "no-trailing-spaces": 0
   }
 };

@@ -8,6 +8,8 @@ public class SharingQuery {
     private Integer page;
     private Integer pageSize;
 
+    private String sharingNo;
+
     private int limit;
     private int offset;
 
@@ -44,5 +46,13 @@ public class SharingQuery {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String getSharingNo() {
+        return sharingNo;
+    }
+
+    public void setSharingNo(String sharingNo) {
+        this.sharingNo = sharingNo;
     }
 }

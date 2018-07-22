@@ -12,7 +12,7 @@
           </Row>
         </i-col>
       </Row>
-        <hr size="1" style="width:100%; margin-top: 3px; margin-bottom: 5px;" />
+        <hr size="1" style="width:100%; margin-top: 3px; margin-bottom: 5px; heigth: 1px; border: none; background-color: #bbbec4" />
     </div>
 </template>
 

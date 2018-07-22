@@ -2,12 +2,14 @@ package com.yiban.sharing.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.yiban.sharing.constants.SharingHandleStatus;
 import com.yiban.sharing.constants.SharingModalStatus;
+import com.yiban.sharing.dao.SharingCountMapper;
 import com.yiban.sharing.dao.SharingModalMapper;
+import com.yiban.sharing.dao.SharingProcessMapper;
+import com.yiban.sharing.dao.SharingRecordMapper;
 import com.yiban.sharing.dto.SharingQuery;
-import com.yiban.sharing.entities.ModalBody;
-import com.yiban.sharing.entities.SharingModal;
-import com.yiban.sharing.entities.User;
+import com.yiban.sharing.entities.*;
 import com.yiban.sharing.exception.BizException;
 import com.yiban.sharing.exception.ErrorCode;
 import com.yiban.sharing.utils.GeneratorUtil;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +35,12 @@ public class SharingEditService {
     private StringRedisTemplate redisTemplate;
     @Autowired
     private SharingModalMapper sharingModalMapper;
+    @Autowired
+    private SharingRecordMapper sharingRecordMapper;
+    @Autowired
+    private SharingProcessMapper sharingProcessMapper;
+    @Autowired
+    private SharingCountMapper sharingCountMapper;
 
 
     @Transactional
@@ -46,6 +55,33 @@ public class SharingEditService {
         modal.setCreatedBy(String.valueOf(user.getId()));
         modal.setCreatedTime(new Date());
         sharingModalMapper.insert(modal);
+
+        //创建统计数据记录
+        SharingCount count = new SharingCount();
+        count.setSharingNo(modal.getSharingNo());
+        count.setTotalClick(0L);
+        count.setTotalRecord(0L);
+        count.setTotalUnprocess(0L);
+        count.setUpdatedTime(new Date());
+        sharingCountMapper.insert(count);
+
+        log.info("create modal {} success", modal.getId());
+
+        //add to cache
+        ValueOperations<String, String> operations = redisTemplate.opsForValue();
+        String cacheValue = JSON.toJSONString(modal);
+        operations.set(modal.getSharingNo(), cacheValue, 30, TimeUnit.DAYS);
+    }
+
+    public void updateSharingModal(SharingModal modal, User user) throws BizException {
+        validateParams(modal);
+        SharingModal existModal = sharingModalMapper.selectByPrimaryKey(modal.getId());
+        if (existModal == null) {
+            throw new BizException(ErrorCode.SHARING_MODAL_GET_FAIL);
+        }
+        modal.setUpdatedTime(new Date());
+        modal.setUpdatedBy(String.valueOf(user.getId()));
+        sharingModalMapper.updateByPrimaryKey(modal);
 
         //add to cache
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
@@ -115,5 +151,84 @@ public class SharingEditService {
         sharingModalMapper.updateByPrimaryKey(modal);
         //delete redis cache;
         redisTemplate.delete(modal.getSharingNo());
+    }
+
+    public int getSharingRecordsCount(String sharingNo) {
+        if (StringUtils.isEmpty(sharingNo)) {
+            return 0;
+        }
+        return sharingRecordMapper.getSharingRecordsCount(sharingNo);
+    }
+
+    public List<SharingRecord> getSharingRecords(SharingQuery query) {
+        if (query == null || StringUtils.isEmpty(query.getSharingNo())) {
+            return Collections.emptyList();
+        }
+        return sharingRecordMapper.getSharingRecords(query);
+    }
+
+    public List<SharingProcess> getSharingProcesses(Integer recordId) {
+        if (recordId == null || recordId <= 0) {
+            return Collections.emptyList();
+        }
+        return sharingProcessMapper.getByRecordId(recordId);
+    }
+
+    @Transactional
+    public List<SharingProcess> sharingProcessAdd(SharingProcess process, User user) throws BizException {
+        if (process == null || process.getRecordId() == null || process.getRecordId() <= 0) {
+            throw new BizException(ErrorCode.PARAM_ERROR);
+        }
+        SharingHandleStatus handleStatus = SharingHandleStatus.getByName(process.getHandleStatus());
+        if (handleStatus == null) {
+            throw new BizException(ErrorCode.PARAM_ERROR);
+        }
+
+        SharingRecord record = sharingRecordMapper.selectByPrimaryKey(process.getRecordId());
+        if (record == null) {
+            log.warn("get sharing record by id {} fail.", process.getRecordId());
+            throw new BizException(ErrorCode.PARAM_ERROR);
+        }
+        process.setHandleStatus(handleStatus.name());
+        process.setProcessTime(new Date());
+        process.setProcessUser(user.getId());
+        process.setProcessUserName(StringUtils.isEmpty(user.getUserName()) ? user.getPhone() : user.getUserName());
+        process.setCreatedBy(String.valueOf(user.getId()));
+        process.setCreatedTime(new Date());
+        sharingProcessMapper.insert(process);
+        log.info("record: {} add one process: {} success.", record.getId(), process.getId());
+        record.setHandleStatus(handleStatus.name());
+        record.setUpdatedBy(String.valueOf(user.getId()));
+        record.setUpdatedTime(new Date());
+        sharingRecordMapper.updateByPrimaryKey(record);
+        return getSharingProcesses(process.getRecordId());
+    }
+
+    public void recordAdd(String sharingNo, SharingRecord record) throws BizException {
+        if (StringUtils.isEmpty(sharingNo) || record == null
+                || StringUtils.isEmpty(record.getSharingNo()) || record.getModalId() == null
+                || StringUtils.isEmpty(record.getRecordTicket())) {
+            log.warn("add record by sharingNo is empty.");
+            throw new BizException(ErrorCode.SHARING_MODAL_ERROR);
+        }
+        SharingModal modal = sharingModalMapper.selectByPrimaryKey(record.getModalId());
+        if (modal == null || !sharingNo.equals(modal.getSharingNo()) || !sharingNo.equals(record.getSharingNo())) {
+            log.warn("get sharing fail or sharingNo is error. sharingId: {} sharingNo: {}", record.getModalId(), sharingNo);
+            throw new BizException(ErrorCode.SHARING_MODAL_ERROR);
+        }
+
+        //检查是否已经提交过但是出于未处理状态，如果是，不能再次提交
+        SharingRecord existRecord = sharingRecordMapper.getByRecordTicket(record.getRecordTicket());
+        if (existRecord != null) {
+            throw new BizException(ErrorCode.SHARING_RECORD_TICKET_EXIST);
+        }
+
+        //insert record
+        record.setHandleStatus(SharingHandleStatus.UNPROCESS.name());
+        record.setCreatedBy("system");
+        record.setCreatedTime(new Date());
+
+        sharingRecordMapper.insert(record);
+        log.info("success save sharing: {} record: {}", sharingNo, record.getId());
     }
 }

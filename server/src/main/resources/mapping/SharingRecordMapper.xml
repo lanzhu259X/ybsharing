@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yiban.sharing.dao.SharingRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.yiban.sharing.entities.SharingRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="record_ticket" property="recordTicket" jdbcType="VARCHAR"/>
+    <result column="modal_id" property="modalId" jdbcType="INTEGER" />
+    <result column="sharing_no" property="sharingNo" jdbcType="VARCHAR" />
+    <result column="handle_status" property="handleStatus" jdbcType="VARCHAR" />
+    <result column="record_modal" property="recordModal" jdbcType="LONGVARCHAR" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_by" property="updatedBy" jdbcType="VARCHAR" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, record_ticket, modal_id, sharing_no, handle_status, record_modal, created_by, created_time, updated_by, updated_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from t_sharing_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="com.yiban.sharing.entities.SharingRecord" keyProperty="id" useGeneratedKeys="true" >
+    insert into t_sharing_record (record_ticket, modal_id, sharing_no,
+      handle_status, created_by, created_time, 
+      updated_by, updated_time, record_modal
+      )
+    values (#{recordTicket,jdbcType=VARCHAR}, #{modalId,jdbcType=INTEGER}, #{sharingNo,jdbcType=VARCHAR},
+      #{handleStatus,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=VARCHAR}, #{updatedTime,jdbcType=TIMESTAMP}, #{recordModal,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.yiban.sharing.entities.SharingRecord" >
+    update t_sharing_record
+    set record_ticket = #{recordTicket,jdbcType=VARCHAR},
+      modal_id = #{modalId,jdbcType=INTEGER},
+      sharing_no = #{sharingNo,jdbcType=VARCHAR},
+      handle_status = #{handleStatus,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=VARCHAR},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      record_modal = #{recordModal,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getSharingRecordsCount" resultType="java.lang.Integer" parameterType="java.lang.String">
+    select count(1) from t_sharing_record where sharing_no = #{sharingNo}
+  </select>
+
+  <select id="getSharingRecords" parameterType="com.yiban.sharing.dto.SharingQuery" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from t_sharing_record
+    where sharing_no = #{sharingNo}
+    order by id desc
+    <if test="offset != null and limit != null">
+      limit #{offset}, #{limit}
+    </if>
+  </select>
+
+  <select id="getByRecordTicket" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from t_sharing_record where record_ticket = #{recordTicket,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

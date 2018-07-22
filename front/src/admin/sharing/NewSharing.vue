@@ -14,25 +14,33 @@
             </Row>
             <Row >
                 <FormItem prop="sharingContent" >
-                    <i-input style="width: 97%;" type="textarea" :rows="3" v-model="formData.sharingContent" placeholder="请输入分享规则或内容描述" />
+                    &nbsp;<i-input style="width: 97%;" type="textarea" :rows="3" v-model="formData.sharingContent" placeholder="请输入分享规则或内容描述" />
                 </FormItem>
             </Row>
             <my-title title="登记信息"></my-title>
-            <Row class="data-list-row" v-for="(item, index) in dataList" type="flex" justify="start" :key="index" :gutter="15">
-                <i-col span="15">
-                    <i-input v-model="item.name" placeholder="请输入字段描述,eg:姓名" />
-                </i-col>
-                <i-col span="7">
-                    <Checkbox v-model="item.required">是否必输</Checkbox>
-                </i-col>
-                <i-col span="2">
-                    <a href="javascript:void(0)" @click="removeItem(index)">
-                        <Icon color="#ed3f14" size="25" type="minus-circled"></Icon>
-                    </a>
-                </i-col>
-            </Row>
+            <div v-for="(item, index) in dataList" :key="index" class="data-list-row">
+              <Row type="flex" justify="start" :gutter="15">
+                  <i-col span="15">
+                      <i-input v-model="item.name" placeholder="请输入字段描述,eg:姓名" />
+                  </i-col>
+                  <i-col span="7">
+                      <Checkbox v-model="item.required">是否必输</Checkbox>
+                  </i-col>
+                  <i-col span="2">
+                      <a href="javascript:void(0)" @click="removeItem(index)">
+                          <Icon color="#ed3f14" size="25" type="minus-circled"></Icon>
+                      </a>
+                  </i-col>
+              </Row>
+              <Row v-if="item.selector" type="flex" justify="start" style="margin-top:5px;">
+                <i-input v-model="item.selectValues" placeholder="下拉选择框的值, 多个值之间使用';'号分割, eg: 6个月;12个月;24个月"/>
+              </Row>
+            </div>
         </Form>
-        <Button type="dashed" icon="plus" style="margin-left: 10px; background-color: #fff;" @click="addItem">添加字段</Button>
+        <BottonGroup>
+          <Button type="dashed" icon="plus" style="margin-left: 10px; background-color: #fff;" @click="addTextItem">文本输入框</Button>
+          <Button type="dashed" icon="plus" style="margin-left: 10px; background-color: #fff;" @click="addSelectItem">下拉选择框</Button>
+        </BottonGroup>
 
         <hr size="2" style="margin-top: 10px; margin-bottom:15px; margin-left:5px; width:97%;" />
         <ButtonGroup style="margin-left: 10px;">
@@ -71,18 +79,35 @@ export default {
         {
           name: "",
           value: "",
-          required: false
+          required: false,
+          selector: false,
+          selectValues: "",
+          options: []
         }
       ],
       submitLoading: false
     };
   },
   methods: {
-    addItem() {
+    addTextItem() {
       let item = {
         name: "",
         value: "",
-        required: false
+        required: false,
+        selector: false,
+        selectValues: "",
+        options: []
+      };
+      this.dataList.push(item);
+    },
+    addSelectItem() {
+      let item = {
+        name: "",
+        value: "",
+        required: false,
+        selector: true,
+        selectValues: "",
+        options: []
       };
       this.dataList.push(item);
     },
@@ -98,7 +123,10 @@ export default {
         {
           name: "",
           value: "",
-          required: false
+          required: false,
+          selector: true,
+          selectValues: "",
+          options: []
         }
       ];
       this.formData = {

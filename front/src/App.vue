@@ -24,15 +24,13 @@ body {
   width: 100%;
   height: 100%;
   background: #f0f0f0;
-  overflow: hidden;
+  overflow: auto;
 }
 #app {
   width: 100%;
   height: 100%;
 }
 .page-footer {
-  position: absolute;
   width: 100%;
-  bottom: 0em;
 }
 </style>
