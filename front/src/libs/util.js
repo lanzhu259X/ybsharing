@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "../store";
-import env from "../../config/curr.env";
+import env from "../../build/curr.env";
 import router from "../router";
 
 const ajaxUrl =
