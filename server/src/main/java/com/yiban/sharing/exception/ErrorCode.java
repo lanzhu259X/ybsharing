@@ -22,6 +22,9 @@ public enum ErrorCode {
 
 
 
+    WX_JSAPI_TICKET_FAIL(9900, "获取微信验证票据失败"),
+    WX_SIGN_CONFIG_FAIL(9901, "获取微信签名配置失败"),
+
     PARAM_ERROR(9990, "参数错误"),
     UPLOAD_FILE_TYPE_ERROR(9991, "上传文件类型错误"),
     DB_INSER_FAIL(9995, "数据保存失败"),
