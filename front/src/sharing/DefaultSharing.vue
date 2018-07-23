@@ -25,7 +25,7 @@
                         <span style="color: #ed3f14;" >{{item.required ? "*" : `&nbsp;`}}</span>
                         <i-input style="width: 95%;" clearable v-if="!item.selector" v-model="item.value" :placeholder="item.name">
                         </i-input>
-                        <Select style="width: 95%;" clearable v-else v-model="item.vaule">
+                        <Select style="width: 95%;" clearable v-else v-model="item.vaule" :placeholder="item.name">
                             <Option v-for="(optionItem, oIndex) in item.options" :key="oIndex" :value="optionItem">{{optionItem}}</Option>
                         </Select>
                     </div>
@@ -66,6 +66,9 @@ export default {
   },
   mounted() {
     this.init();
+  },
+  watch: {
+    $route: "init"
   },
   methods: {
     init() {
@@ -172,7 +175,7 @@ export default {
 
 .record-content {
   margin-bottom: 1.2em;
-  width: 360px;
+  width: 320px;
 }
 </style>
 

@@ -12,6 +12,7 @@ import com.yiban.sharing.dto.SharingQuery;
 import com.yiban.sharing.entities.*;
 import com.yiban.sharing.exception.BizException;
 import com.yiban.sharing.exception.ErrorCode;
+import com.yiban.sharing.utils.AliOSSClientUtil;
 import com.yiban.sharing.utils.GeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,20 @@ public class SharingEditService {
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
         String cacheValue = JSON.toJSONString(modal);
         operations.set(modal.getSharingNo(), cacheValue, 30, TimeUnit.DAYS);
+
+        //如果图像URL变动了，直接删除老的图像
+        if (existModal.getHeadFileKey() != null && !existModal.getHeadFileKey().equals(modal.getHeadFileKey())) {
+            AliOSSClientUtil.deleteFile(AliOSSClientUtil.getOssClient(), AliOSSClientUtil.OSS_BUCKET, existModal.getHeadFileKey());
+        }
+    }
+
+    /**
+     * 管理台的尽量使用没有缓存的，这样修改保证数据库数据
+     * @param sharingNo
+     * @return
+     */
+    public SharingModal getBySharingNoNoCache(String sharingNo) {
+        return sharingModalMapper.findBySharingNo(sharingNo);
     }
 
     public SharingModal getBySharingNo(String sharingNo) {

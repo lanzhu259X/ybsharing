@@ -5,7 +5,7 @@ import router from "../router";
 
 const ajaxUrl =
   env === "development"
-    ? "http://localhost:8089/sharingserver"
+    ? "http://localhost:8889/sharingserver"
     : "http://sharing.yibanjf.com/sharingserver";
 
 const util = {};

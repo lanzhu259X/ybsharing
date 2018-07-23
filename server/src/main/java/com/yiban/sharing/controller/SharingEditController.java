@@ -65,9 +65,9 @@ public class SharingEditController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/detail/{sharingNo}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/detail/{sharingNo}/nocache", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getDetailBySharingNo(@PathVariable String sharingNo) throws Exception {
-        SharingModal modal = sharingEditService.getBySharingNo(sharingNo);
+        SharingModal modal = sharingEditService.getBySharingNoNoCache(sharingNo);
         if (modal == null) {
             throw new BizException(ErrorCode.SHARING_MODAL_GET_FAIL);
         }else {

@@ -13,31 +13,33 @@
                 <img width="100%" height="200" v-if="sharingModal.headImage" class="head-image" :src="sharingModal.headImage" />
             </div>
             <Row type="flex" justify="start">
-                <strong>分享编号:</strong>
+                <strong>分享模板编号:</strong>
             </Row>
             <Row type="flex" justify="start" class="modal-info">
-                {{sharingModal.sharingNo}}
+                <p>{{sharingModal.sharingNo}}</p>
             </Row>
-
             <Row type="flex" justify="start">
                 <strong>标题:</strong>
             </Row>
             <Row type="flex" justify="start" class="modal-info">
-                {{sharingModal.sharingTitle}}
+                <span style="color: #ed3f14">*</span><i-input style="width: 97%;" v-model="sharingModal.sharingTitle" placeholder="请输入分享标题" />
             </Row>
-
             <Row type="flex" justify="start">
                 <strong>副标题:</strong>
             </Row>
             <Row type="flex" justify="start" class="modal-info">
-                {{sharingModal.sharingSubTitle}}
+              <span style="color: #ed3f14">*</span><i-input style="width: 97%;" v-model="sharingModal.sharingSubTitle" placeholder="请输入分享副标题" />
             </Row>
 
             <Row type="flex" justify="start">
                 <strong>规则/描述:</strong>
             </Row>
             <Row type="flex" justify="start" class="modal-info">
-                {{sharingModal.sharingContent}}
+              &nbsp;<i-input style="width: 97%;" type="textarea" :rows="3" v-model="sharingModal.sharingContent" placeholder="请输入分享规则或内容描述" />
+            </Row>
+
+            <Row type="flex" justify="end" class="modal-info" style="margin-right:6px;">
+              <Button size="small" type="success" icon="checkmark" @click="updateModalHandle">保存修改</Button>
             </Row>
 
             <Row type="flex" justify="start">
@@ -47,6 +49,7 @@
               <image-upload :namePre="filePreName" @success="imageHeadUpload"></image-upload>
             </Row>
 
+            <my-title title="登记记录" style="margin-top: 25px"></my-title>
             <Table highlight-row :columns="recordColumns" :data="recordData"
                 :loading="recordLoading"
                 ref="table" size="small">
@@ -158,6 +161,9 @@ export default {
   mounted() {
     this.init();
   },
+  watch: {
+    $route: "init"
+  },
   methods: {
     init() {
       this.sharingNo = this.$route.params.sharingNo;
@@ -168,7 +174,7 @@ export default {
       this.filePreName = this.sharingNo + "-head";
       let self = this;
       util.ajax
-        .get("/sharing/admin/detail/" + this.sharingNo)
+        .get("/sharing/admin/detail/" + this.sharingNo + "/nocache")
         .then(response => {
           this.sharingModal = response.data;
           this.setModalTableColumn();
@@ -177,6 +183,34 @@ export default {
         })
         .catch(error => {
           util.errorProcessor(self, error);
+        });
+    },
+
+    updateModalHandle() {
+      if (!this.sharingModal) {
+        return;
+      }
+      if (
+        !this.sharingModal.sharingTitle ||
+        !this.sharingModal.sharingTitle.trim()
+      ) {
+        this.$Message.info("模板标题不能为空");
+        return;
+      }
+      if (
+        !this.sharingModal.sharingSubTitle ||
+        !this.sharingModal.sharingSubTitle.trim()
+      ) {
+        this.$Message.info("模板付标题不能为空");
+        return;
+      }
+      util.ajax
+        .post("/sharing/admin/modal/update", this.sharingModal)
+        .then(response => {
+          this.$Message.success("模板数据修改成功");
+        })
+        .catch(error => {
+          util.errorProcessor(this, error);
         });
     },
 
@@ -405,7 +439,7 @@ export default {
 
 <style lang="less">
 .sharing-modal {
-  padding-left: 10px;
+  padding-left: 5px;
   padding-right: 5px;
   .modal-info {
     margin-top: 0.2em;
