@@ -49,6 +49,14 @@
               <image-upload :namePre="filePreName" @success="imageHeadUpload"></image-upload>
             </Row>
 
+            <Row type="flex" justify="start">
+                <strong>分享小图标:(图片尺寸: 200 x 200)</strong>
+            </Row>
+            <Row type="flex" justify="start" class="modal-info">
+              <image-upload :namePre="filePreName" @success="imageSharingUpload"></image-upload>
+              <img style="margin-left: 15px;" width="60" height="60" v-if="sharingModal.sharingImage" :src="sharingModal.sharingImage" />
+            </Row>
+
             <my-title title="登记记录" style="margin-top: 25px"></my-title>
             <Table highlight-row :columns="recordColumns" :data="recordData"
                 :loading="recordLoading"
@@ -166,6 +174,9 @@ export default {
   },
   methods: {
     init() {
+      if (this.$route.name !== "sharingdetail") {
+        return;
+      }
       this.sharingNo = this.$route.params.sharingNo;
       if (!this.sharingNo) {
         console.log("sharingNo get fail.");
@@ -177,6 +188,7 @@ export default {
         .get("/sharing/admin/detail/" + this.sharingNo + "/nocache")
         .then(response => {
           this.sharingModal = response.data;
+          //初始化微信分享数据
           this.setModalTableColumn();
           this.loadSharingRecords();
           this.refreshTongji();
@@ -224,6 +236,23 @@ export default {
           .post("/sharing/admin/modal/update", this.sharingModal)
           .then(response => {
             this.$Message.success("头图片更新成功");
+          })
+          .catch(error => {
+            util.errorProcessor(this, error);
+          });
+      }
+    },
+
+    imageSharingUpload(data) {
+      console.log(data);
+      if (data && data.url && data.fileKey) {
+        //修改当前模板的信息
+        this.sharingModal.sharingImage = data.url;
+        this.sharingModal.sharingFileKey = data.fileKey;
+        util.ajax
+          .post("/sharing/admin/modal/update", this.sharingModal)
+          .then(response => {
+            this.$Message.success("分享小图标更新成功");
           })
           .catch(error => {
             util.errorProcessor(this, error);

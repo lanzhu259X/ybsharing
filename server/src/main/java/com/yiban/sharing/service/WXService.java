@@ -29,8 +29,8 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class WXService {
 
-    private static final String WX_ACCESS_TOKEN_CACHE_KEY = "LZ_WX_ACCESS_TOKEN";
-    private static final String WX_JSAPI_TICKET_CACHE_KEY = "LZ_WX_JSAPI_TICKET";
+    private static final String WX_ACCESS_TOKEN_CACHE_KEY = "YB_WX_ACCESS_TOKEN";
+    private static final String WX_JSAPI_TICKET_CACHE_KEY = "YB_WX_JSAPI_TICKET";
 
 
 

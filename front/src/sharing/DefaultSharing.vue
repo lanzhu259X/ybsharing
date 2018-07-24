@@ -50,6 +50,7 @@
 <script>
 import util from "@/libs/util.js";
 import CompanyDesc from "@/components/CompanyDesc.vue";
+import wxsharing from "@/libs/wxsharing.js";
 
 export default {
   name: "DefaultSharing",
@@ -72,6 +73,9 @@ export default {
   },
   methods: {
     init() {
+      if (this.$route.name !== "defaultsharing") {
+        return;
+      }
       this.sharingNo = this.$route.params.sharingNo;
       console.log(this.sharingNo);
       if (!this.sharingNo) {
@@ -92,6 +96,17 @@ export default {
           this.sharingModal = response.data;
           if (this.sharingModal.sharingTitle) {
             window.document.title = this.sharingModal.sharingTitle;
+            //初始化微信分享信息
+            let param = {
+              title: this.sharingModal.sharingTitle,
+              desc: this.sharingModal.sharingSubTitle,
+              link: window.location.href,
+              imgUrl: this.sharingModal.sharingImage
+                ? this.sharingModal.sharingImage
+                : "https://yibansharing.oss-cn-shanghai.aliyuncs.com/image/default-1807241425.png?Expires=1847773554&OSSAccessKeyId=LTAIULFYwI6R0YNJ&Signature=MPkxzHIZHF7rMYo%2FXID90qxxNkU%3D",
+              localUrl: window.location.href.split("#")[0]
+            };
+            wxsharing.sharing(this, param);
           }
           if (!this.sharingModal || this.sharingModal.status !== "NORMAL") {
             this.isDown = true;

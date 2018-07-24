@@ -1,7 +1,6 @@
 package com.yiban.sharing.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.yiban.sharing.constants.SharingHandleStatus;
 import com.yiban.sharing.constants.SharingModalStatus;
 import com.yiban.sharing.dao.SharingCountMapper;
@@ -13,16 +12,18 @@ import com.yiban.sharing.entities.*;
 import com.yiban.sharing.exception.BizException;
 import com.yiban.sharing.exception.ErrorCode;
 import com.yiban.sharing.utils.AliOSSClientUtil;
+import com.yiban.sharing.utils.EmailClientUtil;
 import com.yiban.sharing.utils.GeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SharingEditService {
 
+    @Value("${notify.record.emails}")
+    private String recordEmails;
     @Autowired
     private StringRedisTemplate redisTemplate;
     @Autowired
@@ -92,6 +95,9 @@ public class SharingEditService {
         //如果图像URL变动了，直接删除老的图像
         if (existModal.getHeadFileKey() != null && !existModal.getHeadFileKey().equals(modal.getHeadFileKey())) {
             AliOSSClientUtil.deleteFile(AliOSSClientUtil.getOssClient(), AliOSSClientUtil.OSS_BUCKET, existModal.getHeadFileKey());
+        }
+        if (existModal.getSharingFileKey() != null && !existModal.getSharingFileKey().equals(modal.getSharingFileKey())) {
+            AliOSSClientUtil.deleteFile(AliOSSClientUtil.getOssClient(), AliOSSClientUtil.OSS_BUCKET, existModal.getSharingFileKey());
         }
     }
 
@@ -245,5 +251,23 @@ public class SharingEditService {
 
         sharingRecordMapper.insert(record);
         log.info("success save sharing: {} record: {}", sharingNo, record.getId());
+
+        //发送邮件 提示邮件
+        if (!StringUtils.isEmpty(recordEmails)) {
+            List<String> toEmails = Arrays.asList(recordEmails.split(";"));
+            String subject = modal.getSharingTitle() + "-分享登记";
+
+            StringBuilder text = new StringBuilder();
+            text.append("模板标题：" + modal.getSharingTitle() + "<br/>");
+            text.append("模板编号:" + modal.getSharingNo() + "<br/>");
+            text.append("<br/>");
+            text.append("客户登记信息：<br/><br/>");
+            text.append(JSON.toJSONString(record));
+            text.append("<br/><br/>");
+            text.append("<strong>请及时处理!</strong>");
+
+            EmailClientUtil.sendMail(EmailClientUtil.getSession(), subject, toEmails, text.toString(), null);
+        }
+
     }
 }

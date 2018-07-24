@@ -28,6 +28,7 @@ public class WXServiceTest {
     @Test
     public void getWXSignConfig() {
         try {
+//            #/sharing/default/S1807231227-0334
             WXSignEntity entity = wxService.getWXSignConfig("http://sharing.yibanjf.com/dist/");
             log.info(JSON.toJSONString(entity));
         } catch (BizException e) {

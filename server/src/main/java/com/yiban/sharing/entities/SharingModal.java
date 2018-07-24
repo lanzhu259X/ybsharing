@@ -24,6 +24,10 @@ public class SharingModal {
 
     private String headFileKey;
 
+    private String sharingImage;
+
+    private String sharingFileKey;
+
     private String recordModal;
 
     private List<ModalBody> modalBodyList;
@@ -163,5 +167,21 @@ public class SharingModal {
 
     public void setHeadFileKey(String headFileKey) {
         this.headFileKey = headFileKey;
+    }
+
+    public String getSharingImage() {
+        return sharingImage;
+    }
+
+    public void setSharingImage(String sharingImage) {
+        this.sharingImage = sharingImage;
+    }
+
+    public String getSharingFileKey() {
+        return sharingFileKey;
+    }
+
+    public void setSharingFileKey(String sharingFileKey) {
+        this.sharingFileKey = sharingFileKey;
     }
 }
