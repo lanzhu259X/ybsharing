@@ -19,7 +19,7 @@
         </Row>
 
         <Row type="flex" justify="center" style="margin-top: 2em;">
-            <img width="40%" height="40%" src="../image/yiban.webp"/>
+            <img width="146" height="54"  src="https://yibansharing.oss-cn-shanghai.aliyuncs.com/image/default-1807241609.png?Expires=1847779767&OSSAccessKeyId=LTAIULFYwI6R0YNJ&Signature=mO6jUtefPc4CSBTPqBm%2B6TD%2BV8M%3D"/>
         </Row>
     </div>
 </template>
