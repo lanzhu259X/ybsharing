@@ -9,3 +9,4 @@ build/
 target/
 logs/
 spider/env
+node_modules/
